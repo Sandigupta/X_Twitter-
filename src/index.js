@@ -3,10 +3,9 @@ const app = express();
 
 const connect = require('./config/databases');
 const model = require('./model/tweet');
-const TweetRepository = require('./repository/tweet-repository');
 const Comment = require('./model/comment');
-
-
+const tweetRepository=require('./repository/tweet-repository')
+const tweetRepo = new tweetRepository();
 
 app.listen(3000, async () => {
     console.log("Server running at port 3000");
@@ -26,8 +25,8 @@ app.listen(3000, async () => {
     // await doc.save();
     // console.log(doc);
 
-    const tweetRepo = new TweetRepository();
     // const tweet = await tweetRepo.create({ content: 'new Tweet with comment schema' });
+    // console.log(tweet);
     // const comment = await Comment.create({ content: 'new new comment' });
     // tweet.comments.push(comment);
     // await tweet.save();
@@ -49,7 +48,55 @@ app.listen(3000, async () => {
     // const allTweet = await tweetRepo.getAll(0, 8);
     // console.log(allTweet[0].contentWithEmail);
     
-    const tweet = await tweetRepo.create({ content: "to check the hook" });
-    console.log(tweet);
+    // const tweet = await tweetRepo.create({ content: "to check the hook" });
+    // console.log(tweet);
 
+
+    // !creating hash tag db and populating it
+    const HashtagRepository=require("./repository/hashtags-repository")
+    const HashtagRepo = new HashtagRepository();
+    // const deleInfo = await tagRepo.destroyAll();
+    // console.log(deleInfo);
+
+
+    // await tagRepo.create([
+    //     {
+    //         title: 'Tread',
+    //         tweets: []  
+    //     },
+    //     {
+    //         title: 'Excited',
+    //         tweets:[]
+    //     },
+    //     {
+    //         title: 'Python',
+    //         tweets:[]
+    //     },
+    //     {
+    //         title: 'Python',
+    //         tweets:[]
+    //     },
+    //     {
+    //         title: 'Fun',
+    //         tweets:[]
+    //     },
+    //     {
+    //         titale: 'Career',
+    //         tweets:[]
+    //     }
+    // ])
+    
+    // let response = await HashtagRepo.findByName(['Trend', 'Excited','Fun']);
+    // console.log(response);//[ { title: 'Excited' }, { title: 'Fun' } ]
+    
+    // response = response.map(tags => tags.title);
+    // console.log(response);//[ 'Excited', 'Fun' ]
+
+    
+    
+    // creating new tweet to filter out the tags that are not present
+    const TweetService=require("./service/tweet-service")
+    const tweetService = new TweetService();
+    const respons=await tweetService.create({content:"#tweet is working"})
+     console.log(respons)
 })

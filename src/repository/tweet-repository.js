@@ -1,6 +1,6 @@
 const Tweet = require('../model/tweet');
 
-class tweetRepository{
+class TweetRepository{
     async create(data){
           try {
               const tweet=await Tweet.create(data);
@@ -55,11 +55,13 @@ class tweetRepository{
     }
     
     // Pagination: Fetches a specific subset of tweets instead of the entire collection.
+
     /*
     Pagination is the process of dividing large sets of data into smaller, manageable 
     chunks (or "pages") to improve performance and user experience. It allows clients 
     to request and view only a subset of results at a time, rather than fetching the entire dataset.
     */
+    
     // .skip(offset) skips the first 'offset' number of tweets (used to go to the correct page).
     // .limit(limit) restricts the number of tweets returned to the 'limit' (used to control page size).
     async getAll(offset, limit) {
@@ -72,4 +74,4 @@ class tweetRepository{
     }
 }
 
-module.exports = tweetRepository;
+module.exports = TweetRepository;
