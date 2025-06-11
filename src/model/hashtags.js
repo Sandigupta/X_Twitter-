@@ -1,18 +1,18 @@
-const mongoose = require('mongoose');
-const Tweet = require('./tweet');
+import mongoose from 'mongoose';
 
-const hashtagSchema =new mongoose.Schema({
+const hashtagSchema = new mongoose.Schema({
     title: {
-        type: String,
-        require:true
+        type: String, // The title of the hashtag, must be a string
+        required: true, // This field is required
+        unique: true // This field must be unique across all documents
     },
     tweets: [
         {
-            type: mongoose.Schema.Types.ObjectId,
-            ref:'Tweet'
+            type: mongoose.Schema.Types.ObjectId, // Each tweet is referenced by its ObjectId
+            ref: 'Tweet' // This indicates that the ObjectId refers to the Tweet model
         }
     ]
-}, { timestamps: true })
+}, { timestamps: true }); // Automatically manage createdAt and updatedAt fields
 
 const HashTag = mongoose.model('HashTag', hashtagSchema);
-module.exports = HashTag;
+export default HashTag;

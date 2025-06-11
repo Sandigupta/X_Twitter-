@@ -1,18 +1,17 @@
-const TweetRepository = require("../repository/tweet-repository");
-const  HashTagRepository  = require("../repository/hashtags-repository");
+import {TweetRepository, HashtagRepository } from "../repository/index.js"
 
 class TweetService{
     constructor() {
         this.tweetRepository = new TweetRepository();
-        this.hashTagRepository = new HashTagRepository();
+        this.hashTagRepository = new HashtagRepository();
     }
 
     async create(data) {
 
         const content = data.content;
-        let tag = content.match(/#[a-zA-Z0-9_]+/g);
-        tag.map((element) => element.substring(1));
-        console.log("current tags:",tag);
+        let tag = content.match(/#[a-zA-Z0-9_]+/g) || [];
+        tag = tag.map(ele => ele.substring(1).toLowerCase()); // remove `#` and convert to lowercase
+        console.log("current tags:", tag); 
         const Tweet = await this.tweetRepository.create(data);
         console.log(Tweet);
 
@@ -46,7 +45,7 @@ class TweetService{
         console.log("tagDoc:", tagDoc); // Add this line
 
         if (!tagDoc || !tagDoc._id) {
-            console.warn("⚠️ Invalid tagDoc without _id:", tagDoc);
+            console.warn("Invalid tagDoc without _id:", tagDoc);
             return;
         }  
 
@@ -70,4 +69,4 @@ class TweetService{
     }
 }
 
-module.exports = TweetService;
+export default TweetService;
