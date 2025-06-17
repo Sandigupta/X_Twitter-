@@ -1,16 +1,21 @@
 import express, { urlencoded } from 'express';
 import connect from './config/databases.js';
 
-import TweetRepository from './repository/tweet-repository.js';
-const tweetRepo = new TweetRepository();
+// import TweetRepository from './repository/tweet-repository.js';
+// const tweetRepo = new TweetRepository();
 
 import HashtagRepository from "./repository/hashtags-repository.js"
 const HashtagRepo = new HashtagRepository();
 
 import TweetService from "./service/tweet-service.js"
 const tweetService = new TweetService();
+
 import bodyParser from 'body-parser';
 const app = express();
+
+import { UserRepository,TweetRepository } from './repository/index.js';
+import LikeService from './service/like-service.js'
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -117,4 +122,30 @@ app.listen(3000, async () => {
     // creating new tweet to filter out the tags that are not present
     
     
+    
+    // Creating user data in database
+    // const userRepository = new UserRepository();
+    // const user = await  userRepository.create({
+        
+    //         email: 'xyz@gmail.com',   // also fix the domain typo
+    //         password: '123',      // correct key spelling
+    //         name: 'xyz'
+          
+          
+    // })
+    
+
+
+    const tweetRepository = new TweetRepository();
+    // const result = await tweetRepository.create({ content: "this is my #first tweet and i am #excited #enjoy #letsgo #doit" })
+    // console.log(result);
+    const tweets = await tweetRepository.getAll(0, 10);
+    
+    // const hashTag = await tweetService.create(tweets[0]);
+    
+
+    const likeService = new LikeService();
+    // await likeService.toggleLike(tweets[0].id,'Tweet',user.id);
+    await likeService.toggleLike(tweets[0].id,'Tweet','6851e6278b4612895fa0a3e5');
+
 })

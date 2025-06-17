@@ -1,73 +1,52 @@
-import Tweet from '../model/tweet.js';
+import Tweet from '../model/tweet.js'
+import CrudRepository from './crud-repository.js';
 
-class TweetRepository{
-    async create(data){
-          try {
-              const tweet=await Tweet.create(data);
-              return tweet;
-          } catch (error) {
-            console.log(error)
-          }
+class TweetRepository extends CrudRepository {
+    constructor() {
+        super(Tweet);
     }
     
-    // Updating a tweet by its ID and returning the updated document using { new: true } option in findByIdAndUpdate()
-    async update(tweetId, data) {
+    // async create(data) {
+    //     try {
+    //         const tweet = await new Tweet.create(data);
+    //         return tweet;
+    //     } catch (error) {
+    //         // console.log(error);
+    //         throw error;
+    //     }
+    // }
+    
+
+// Reason: The `populate` method is used here to replace the specified paths in the document (in this case, 'comments') with documents from other collections. 
+// This is particularly useful for retrieving related data in a single query, allowing for a more efficient and organized data retrieval process.
+// Unlike promises or plain objects, Mongoose's `populate` is specifically designed to work with Mongoose documents and their relationships.
+    async getWithComments(id) {
         try {
-            const tweet = await Tweet.findByIdAndUpdate(tweetId, data, { new: true });
+            const tweet = await Tweet.findById(id).populate({
+                path: 'comments',
+                populate: {
+                    path: 'comments' // This populates the comments within the comments
+                }
+            }).lean();
             return tweet;
         } catch (error) {
             console.log(error);
         }
     }
 
-    async get(id) {
-          try {
-              const response = await Tweet.findById(id);
-              return response;
-          } catch (error) {
-              console.log(error);
-          }
-    }
-    
-    // We use `.populate('comments')` to replace the comment IDs in the 'comments' field
-    // with the actual comment documents from the database. This allows us to access the
-    // full comment details (like text, author, etc.) directly, instead of just their ObjectIds.
-
-    // .lean() tells Mongoose to return a plain JavaScript object instead of a full Mongoose document.
-    // This improves performance and allows direct manipulation of the data without Mongoose overhead.
-
-    async getWithComments(id) {
-          try {
-              const tweet = await Tweet.findById(id).populate({ path: 'comments' }).lean();
-              return tweet;
-          } catch (error) {
-              console.log(error);
-          }
-    }
-
-    async destroy(id) {
+    async getAll(offset, limit) {
         try {
-            const response = await Tweet.findByIdAndRemove(id);
-            return response;
+            const tweet = await Tweet.find().skip(offset).limit(limit);
+            return tweet;
         } catch (error) {
             console.log(error);
         }
     }
-    
-    // Pagination: Fetches a specific subset of tweets instead of the entire collection.
 
-    /*
-    Pagination is the process of dividing large sets of data into smaller, manageable 
-    chunks (or "pages") to improve performance and user experience. It allows clients 
-    to request and view only a subset of results at a time, rather than fetching the entire dataset.
-    */
-    
-    // .skip(offset) skips the first 'offset' number of tweets (used to go to the correct page).
-    // .limit(limit) restricts the number of tweets returned to the 'limit' (used to control page size).
-    async getAll(offset, limit) {
+    async find(id) {
         try {
-            const response = await Tweet.find().skip(offset).limit(limit);
-            return response;
+            const tweet = await Tweet.findById(id).populate({path: 'likes'});
+            return tweet;
         } catch (error) {
             console.log(error);
         }

@@ -11,6 +11,10 @@ const tweetSchema = new mongoose.Schema({
             ref:"hashtags"
         }
     ],
+    likes:[{
+         type: mongoose.Schema.Types.ObjectId,
+         ref:"Like"
+    }]
    
 }, { timestamps: true });
 
